@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 //{ router }  fordi den bliver exporter som name function's 
 import { router as SongRouter } from './Routes/song.router.js';
+import { router as ArtistRouter } from './Routes/artist.router.js';
+
 
 
 
@@ -19,6 +21,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 app.use(SongRouter);
+app.use(ArtistRouter);
 
 
 app.listen(port, () => {
