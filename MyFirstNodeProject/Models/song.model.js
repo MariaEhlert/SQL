@@ -1,23 +1,41 @@
 import db from '../Config/db.config.js';
 
 class SongModel{
+    //De tre metoder der kan sendes til API'et:
+    //Via en GET adresse i routeren på samme måde som et id i get og delete
+    //params:   '/api/songs/:keyword([a-zA-Z0-9]*)'                         
+    //I modellen hentes denne værdi ud via req.params.keyword
+    
+    //Via et GET parameter i url kaldet på samme måde som orderBy og limit
+    //query:    'http://localhost:4000/api/songs?keyword=god jul'           
+    //I modellen hentes denne værdi via req.query.keyword
+    
+    //Via formdata i Postman på samme måde som i create og update:
+    //body:     x-www-form-urlencoded, key: keyword, value: julegrød        
+    //I modellen hentes denne værdi via req.body.keyword
+
     //metode
     //bliver automatisk opstartet når klassen bliver kørt
     constructor(){
         console.log('Class song model is loaded');
     }
 
+    // s/a er et alias(AS) i metoder (så man ikke behøver at skrive song/artist men bare kan skrive s/a foran)
+
+    //promise bliver altid kald med resolve og reject
+    //skal være asynkron (new promise) da vi ellers ikke får data ud
+
+    //INNER JOIN er det samme som JOIN
+    //når man bruger JOIN skal man også bruge ON
+
     //metode (get)
-    //dette viser id og title for alle sange
+    //dette viser id, title og artistnavn for alle sange
     list = (req, res) => {
-        //promise bliver altid kald med resolve og reject
         return new Promise((resolve, reject) => {
             //orderKey (hvad den sorter efter i params) eller skal den sorter efter song.id
             const orderBy = req.query.orderKey || 's.id'; //dette gør at den tager efter id'et først
             //limit er hvor mange sange den skal hente ud (at i params i postman) eller skal den være være tom
             const limit = req.query.limit ? `LIMIT ${req.query.limit}`: '';
-            //INNER JOIN er det samme som JOIN
-            //når man bruger JOIN skal man også bruge ON
             let sql = `SELECT s.id, s.title, a.name 
                         FROM song s
                         INNER JOIN artist a 
@@ -36,10 +54,7 @@ class SongModel{
     //metode (get)
     //dette viser en id, title, content og artist_id for en enkel sang
     get = (req, res) => {
-        //promise bliver altid kald med resolve og reject
         return new Promise((resolve, reject) => {
-            //INNER JOIN er det samme som JOIN
-            //når man bruger JOIN skal man også bruge ON
             const sql = `SELECT s.id, s.title, s.content, s.artist_id, a.name AS artist, s.created
                             FROM song s
                             JOIN artist a
@@ -56,6 +71,7 @@ class SongModel{
     }
 
     //metode (post)
+    //dette opretter en sang
     create = async (req, res) => {
         return new Promise((resolve, reject) => {
             //reaturner vadierne som et array
@@ -74,11 +90,11 @@ class SongModel{
     }
 
     //metode (put)
+    //dette opdater en sang
     update = async (req, res) => {
         return new Promise((resolve, reject) => {
             //reaturner vadierne som et array
             const arrFormValues = (Object.values(req.body));
-            //der er 3 ? da vi har 3 felter som jeg udfyldes
             const sql = `UPDATE song
                             SET title = ?, content = ?, artist_id = ?
                             WHERE id = ?`; 
@@ -93,6 +109,7 @@ class SongModel{
     }
 
     //metode (delete)
+    //dette sletter en sang
     delete = (req, res) => {
         return new Promise((resolve, reject) => {
             const sql = `DELETE
@@ -109,11 +126,9 @@ class SongModel{
     }
 
     //metode (get)
+    //dette søger på en sang efter title 
     search = (req, res) => {
-        //promise bliver altid kald med resolve og reject
         return new Promise((resolve, reject) => {
-            //INNER JOIN er det samme som JOIN
-            //når man bruger JOIN skal man også bruge ON
             const sql = `SELECT s.title, a.name
                             FROM song s
                             JOIN artist a

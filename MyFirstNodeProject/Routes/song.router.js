@@ -28,7 +28,7 @@ router.put('/api/songs',(req, res) => {
 router.delete('/api/songs/:id([0-9]*)',(req, res) => { 
     controller.delete(req, res);
 });
-
+//søger efter sang title
 router.get('/api/songs/search',(req, res) => { 
     controller.search(req, res);
 });
