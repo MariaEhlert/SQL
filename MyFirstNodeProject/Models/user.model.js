@@ -1,28 +1,20 @@
 import db from '../Config/db.config.js';
-class ArtistModel{
+class UserModel{
+
     //metode
     //bliver automatisk opstartet når klassen bliver kørt
     constructor(){
-        console.log('Class artist model is loaded');
+        console.log('Class user model is loaded');
     }
-
-    //promise bliver altid kald med resolve og reject
-    //skal være asynkron (new promise) da vi ellers ikke får data ud
-
-    //INNER JOIN er det samme som JOIN
-    //når man bruger JOIN skal man også bruge ON
-
     //metode (get)
-    //dette viser id og navne for alle artister
+    //henter alle bruger
     list = (req, res) => {
         return new Promise((resolve, reject) => {
-            //orderBy (hvad den sorter efter i params) eller skal den sorter efter artist.id
-            const orderBy = req.query.orderKey || 'id'; //dette gør at den tager efter id'et først
-            //limit er hvor mange artister den skal hente ud (at i params i postman) eller skal den være være tom
-            const limit = req.query.limit ? `LIMIT ${req.query.limit}`: '';
-            let sql = `SELECT id, name
-                        FROM artist
-                            ORDER BY ${orderBy} ${limit}`; //orderBy er lavet i postman som gør at den skal sorter efter artister
+            //orderBy (hvad den sorter efter i params) eller skal den sorter efter song.id
+            const orderBy = req.query.orderKey || 'user_id'; //dette gør at den tager efter id'et først
+            let sql = `SELECT user_id, firstname, lastname
+                        FROM user
+                            ORDER BY ${orderBy}`; //orderBy er lavet i postman som gør at den skal sorter efter title
             db.query(sql, (err, result) =>{
                 if (err){
                     reject(err);
@@ -33,12 +25,12 @@ class ArtistModel{
         })
     }
     //metode (get)
-    //dette viser et navn og id for en enkle artist
+    //viser brugerdetajler for en enkel bruger
     get = (req, res) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT name, id
-                            FROM artist
-                            WHERE id = ?`;
+            const sql = `SELECT *
+                            FROM user
+                            WHERE user_id = ?`;
             db.query(sql, [req.params.id], (err, result) => {
                 if(err){
                     reject(err)
@@ -48,15 +40,15 @@ class ArtistModel{
             });
         })
     }
-    //metode (post)
-    //dette opretter en artist
+     //metode (post)
+    //dette opretter en bruger
     create = async (req, res) => {
         return new Promise((resolve, reject) => {
             //reaturner vadierne som et array
             const arrFormValues = (Object.values(req.body));
-            //der er 1 ? da vi har 1 felter som jeg udfyldes
-            const sql = `INSERT INTO artist (name)
-            VALUES(?)`; //er blevet sat i postman under x-www-form-urlencoded
+            //der er 5 ? da vi har 5 felter som skal udfyldes
+            const sql = `INSERT INTO user (firstname, lastname, username, password, email)
+            VALUES(?,?,?,?,?)`; //er blevet sat i postman under x-www-form-urlencoded
             db.query(sql, arrFormValues, (err, result) => {
                 if(err) {
                     reject(err)
@@ -67,14 +59,14 @@ class ArtistModel{
         })
     }
     //metode (put)
-    //dette opdater en artist
+    //dette opdater en bruger
     update = async (req, res) => {
         return new Promise((resolve, reject) => {
             //reaturner vadierne som et array
             const arrFormValues = (Object.values(req.body));
-            const sql = `UPDATE artist
-                            SET name = ?
-                            WHERE id = ?`; 
+            const sql = `UPDATE user
+                            SET firstname = ?, lastname = ?, username = ?, password = ?, email = ?
+                            WHERE user_id = ?`; 
             db.query(sql, arrFormValues, (err, result) => {
                 if(err){
                     reject(err)
@@ -85,12 +77,12 @@ class ArtistModel{
         })
     }
     //metode (delete)
-    //dette sletter en artist
+    //dette sletter en bruger
     delete = (req, res) => {
         return new Promise((resolve, reject) => {
             const sql = `DELETE
-                            FROM artist
-                            WHERE id = ?`;
+                            FROM user
+                            WHERE user_id = ?`;
             db.query(sql, [req.params.id], (err, result) => {
                 if(err){
                     reject(err)
@@ -100,22 +92,7 @@ class ArtistModel{
             })
         })
     }
-    //metode (get)
-    //dette søger på en artist efter navn
-    search = (req, res) => {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT name, id
-                            FROM artist
-                            WHERE name LIKE ?`;
-            db.query(sql, [`%${req.query.keyword}%`], (err, result) =>{
-                if (err){
-                    reject(err);
-                } else{
-                    resolve(result);
-                }
-            });
-        })
-    }
+
 }
 
-export default ArtistModel;
+export default UserModel;

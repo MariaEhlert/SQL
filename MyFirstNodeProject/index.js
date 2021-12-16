@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 //{ router }  fordi den bliver exporter som name function's 
 import { router as SongRouter } from './Routes/song.router.js';
 import { router as ArtistRouter } from './Routes/artist.router.js';
+import { router as UserRouter } from './Routes/user.router.js';
 
 
 
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.use(SongRouter);
 app.use(ArtistRouter);
+app.use(UserRouter);
 
 
 app.listen(port, () => {

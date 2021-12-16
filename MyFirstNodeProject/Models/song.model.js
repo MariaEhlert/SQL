@@ -1,5 +1,4 @@
 import db from '../Config/db.config.js';
-
 class SongModel{
     //De tre metoder der kan sendes til API'et:
     //Via en GET adresse i routeren på samme måde som et id i get og delete
@@ -32,7 +31,7 @@ class SongModel{
     //dette viser id, title og artistnavn for alle sange
     list = (req, res) => {
         return new Promise((resolve, reject) => {
-            //orderKey (hvad den sorter efter i params) eller skal den sorter efter song.id
+            //orderBy (hvad den sorter efter i params) eller skal den sorter efter song.id
             const orderBy = req.query.orderKey || 's.id'; //dette gør at den tager efter id'et først
             //limit er hvor mange sange den skal hente ud (at i params i postman) eller skal den være være tom
             const limit = req.query.limit ? `LIMIT ${req.query.limit}`: '';
@@ -40,7 +39,7 @@ class SongModel{
                         FROM song s
                         INNER JOIN artist a 
                         ON s.artist_id = a.id
-                            ORDER BY ${orderBy} ${limit}`; //orderKey er lavet i postman som gør at den skal sorter efter title
+                            ORDER BY ${orderBy} ${limit}`; //orderBy er lavet i postman som gør at den skal sorter efter title
             db.query(sql, (err, result) =>{
                 if (err){
                     reject(err);
